@@ -9,6 +9,8 @@ export function wireDnD(root) {
     let touchClone = null;
     // Variabel som lagrar startpositionen för touch
     let touchStartY = 0;
+
+    let dragging = false;
     
     //För pc
     list.addEventListener("dragstart", (element) => {
@@ -45,6 +47,8 @@ export function wireDnD(root) {
     //För mobil
     // Lyssnare för när användaren börjar röra skärmen
     list.addEventListener("touchstart", (element) => {
+        if(dragging === true) return;
+        dragging = true;
         // Hitta närmaste .draggable element
         const currentCard = element.target.closest(".draggable");
         // Om inget draggable element hittades, gör ingenting
@@ -126,6 +130,7 @@ export function wireDnD(root) {
             // Nollställ touchClone variabeln
             touchClone = null;
         }
+        dragging = false;
     });
 }
 
