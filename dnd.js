@@ -48,17 +48,19 @@ export function wireDnD(root) {
     //För mobil
     // Lyssnare för när användaren börjar röra skärmen
     list.addEventListener("touchstart", (element) => {
+        // Hitta närmaste .draggable element
+        const currentCard = element.target.closest(".draggable");
+        // Om inget draggable element hittades, gör ingenting (tillåt scroll)
+        if (!currentCard) return;
+        
         // NY: Kontrollera om en touch redan är aktiv
         if (isTouchActive) {
             element.preventDefault();
             return; // Ignorera nya touches
         }
         
+        // Endast förhindra default om vi faktiskt hittat ett kort att dra
         element.preventDefault();
-        // Hitta närmaste .draggable element
-        const currentCard = element.target.closest(".draggable");
-        // Om inget draggable element hittades, gör ingenting
-        if (!currentCard) return;
         
         // NY: Markera att en touch nu är aktiv
         isTouchActive = true;
