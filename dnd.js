@@ -48,7 +48,6 @@ export function wireDnD(root) {
     // Lyssnare för när användaren börjar röra skärmen
     list.addEventListener("touchstart", (element) => {
         if(dragging === true) return;
-        dragging = true;
         // Hitta närmaste .draggable element
         const currentCard = element.target.closest(".draggable");
         // Om inget draggable element hittades, gör ingenting
@@ -80,6 +79,7 @@ export function wireDnD(root) {
         
         // Gör originalelementet genomskinligt så man ser var det kommer att placeras
         currentCard.style.opacity = "0.3";
+        dragging = true;
     }, { passive: true }); // passive: true = förbättrar scroll-prestanda
 
     // Lyssnare för när användaren rör fingret över skärmen
