@@ -69,15 +69,17 @@ document.addEventListener("difficulty:selected", async (e) => {
       score: Math.round(score),
       correctCount,
       total: pool.length,
-      difficulty: gameState.difficulty,
+      timeLeft: gameState.timeLeft,
       ts: Date.now(),
     };
     // stoppa timern nu när rundan är klar 
     stopTimer();
 
     // uppdatera leaderboarden och spara senaste resultatet
+    if(score > 0){
     addToLeaderboard(entry);
     saveLastScore(entry);
+    }
     renderLeaderboard();
 
     // skapa en snabb uppslagskarta från id till pristagare
@@ -87,7 +89,7 @@ document.addEventListener("difficulty:selected", async (e) => {
     // Bygg upp HTML för resultatskärmen 
     let resultHTML = `
         <section class="max-w-3xl mx-auto">
-        <div class="text-center mb-6">
+        <div class="text-center mb-2 -mt-6">
         <h2 class="text-2xl font-bold mb-2">Resultat</h2>
         <p class="mb-4">Rätt: ${correctCount}/${pool.length} • Poäng: <span class="score-display">${score}</span> • ${
               gameState.timeLeft <= 0 ? "Tiden tog slut" : `Tid kvar: ${gameState.timeLeft}`}</p>
@@ -135,5 +137,4 @@ document.addEventListener("difficulty:selected", async (e) => {
       .querySelector("#again")
       .addEventListener("click", () => location.reload());
   });
-  console.log(`Du valde ${level} (${count} kort)`);
 });
