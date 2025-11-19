@@ -9,8 +9,9 @@ export function wireDnD(root) {
     let touchClone = null;
     // Variabel som lagrar startpositionen för touch
     let touchStartY = 0;
+    // NY: Variabel som spårar om en touch redan är aktiv
+    let isTouchActive = false;
 
-    let dragging = false;
     
     //För pc
     list.addEventListener("dragstart", (element) => {
@@ -47,13 +48,20 @@ export function wireDnD(root) {
     //För mobil
     // Lyssnare för när användaren börjar röra skärmen
     list.addEventListener("touchstart", (element) => {
-        if(dragging === true) return;
+        // NY: Kontrollera om en touch redan är aktiv
+        if (isTouchActive) {
+            element.preventDefault();
+            return; // Ignorera nya touches
+        }
+        
         element.preventDefault();
-        dragging = true;
         // Hitta närmaste .draggable element
         const currentCard = element.target.closest(".draggable");
         // Om inget draggable element hittades, gör ingenting
         if (!currentCard) return;
+        
+        // NY: Markera att en touch nu är aktiv
+        isTouchActive = true;
         
         // Spara det element som ska flyttas
         dragElement = currentCard;
@@ -81,7 +89,7 @@ export function wireDnD(root) {
         
         // Gör originalelementet genomskinligt så man ser var det kommer att placeras
         currentCard.style.opacity = "0.3";
-    }, { passive: true }); // passive: true = förbättrar scroll-prestanda
+    }, { passive: false }); // ÄNDRAT: passive: false istället för true så preventDefault fungerar
 
     // Lyssnare för när användaren rör fingret över skärmen
     list.addEventListener("touchmove", (element) => {
@@ -131,7 +139,21 @@ export function wireDnD(root) {
             // Nollställ touchClone variabeln
             touchClone = null;
         }
-        dragging = false;
+        // NY: Återställ touch-spärren
+        isTouchActive = false;
+    });
+    
+    // NY: Lyssnare för touchcancel (om touch avbryts, t.ex. vid notifikation)
+    list.addEventListener("touchcancel", () => {
+        if (dragElement) {
+            dragElement.style.opacity = "1";
+            dragElement = null;
+        }
+        if (touchClone) {
+            touchClone.remove();
+            touchClone = null;
+        }
+        isTouchActive = false;
     });
 }
 
